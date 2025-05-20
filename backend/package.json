@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.812.0",
+    "@types/aws-lambda": "^8.10.149",
+    "aws-lambda": "^1.0.7"
+  }
+}
