@@ -1,13 +1,17 @@
 import { downloadFromS3 } from './helpers/downloadFromS3';
+import { deleteFromTempS3 } from './helpers/downloadFromS3';
 import { uploadFolderToS3 } from './helpers/uploadFolderToS3';
 import { uploadMasterFile } from './helpers/uploadMasterFile';
 import { uploadThumbnail } from './helpers/thumbnailUpload';
+import { updateVideosInfo } from './helpers/updateMetadata';
 import fs from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
 import util from 'util';
+import { updateVideosInfo } from './helpers/updateMetadata';
 
 const execAsync = util.promisify(exec);
+export let videoId;
 
 // Make sure folders exist
 ['downloads', 'outputs'].forEach((dir) => {
@@ -25,7 +29,7 @@ export async function transcodeVideo(inputKey) {
     console.log(`🔁 Starting transcoding for ${inputKey}...`);
 
     const localInputPath = await downloadFromS3(inputKey);
-    const videoId = Date.now();
+    videoId = Date.now();
     const s3Prefix = `public-videos/${videoId}`;
 
     for (const rendition of renditions) {
@@ -58,10 +62,18 @@ export async function transcodeVideo(inputKey) {
     fs.rmSync('downloads', { recursive: true, force: true });
     console.log('🧼 Cleaned downloads folder');
 
+    // deleting the original video file from temp bucket 
+    await deleteFromTempS3(inputKey);
+
     ///// here the code for updating video.js with s3Prefix and video title
+    await updateVideosInfo({
+      videoId,
+      title: path.basename(inputKey, path.extname(inputKey)), // use filename as title
+      bucket: process.env.PUBLIC_BUCKET, 
+    });
 
   } catch (err) {
-    console.error(`❌ FFmpeg failed for ${inputKey}:`, err);
+    console.error(`FFmpeg failed for ${inputKey}:`, err);
     throw err;
   }
 }

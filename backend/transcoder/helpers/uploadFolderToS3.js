@@ -30,7 +30,7 @@ export async function uploadFolderToS3(folderPath, s3Prefix) {
     const fileContent = fs.readFileSync(filePath);
 
     const command = new PutObjectCommand({
-      Bucket: process.env.PUBLIC_BUCKET_NAME,       ///// ❌ - public bucket use kr rhe idhar , purani vali nhi
+      Bucket: process.env.PUBLIC_BUCKET_NAME,       
       Key: `${s3Prefix}/${file}`,
       Body: fileContent,
       ContentType: file.endsWith('.ts') ? 'video/MP2T' : 'application/vnd.apple.mpegurl',
