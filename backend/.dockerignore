@@ -1,0 +1,5 @@
+node_modules
+outputs
+downloads
+.env
+.DS_Store

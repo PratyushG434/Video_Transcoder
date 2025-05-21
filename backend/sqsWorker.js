@@ -1,4 +1,5 @@
 import {ReceiveMessageCommand, DeleteMessageCommand, SQSClient} from '@aws-sdk/client-sqs';
+import { transcodeVideo } from './transcoder/transcodeVideo.js';
 
 const client = new SQSClient({
   region: process.env.AWS_REGION,
@@ -47,15 +48,27 @@ async function init() {
                
                 for(const record of event.Records)
                 {
-                    const {s3} = record;
-                    const { bucket, 
-                        object:{key}
-                    } = s3;
+                    const {
+                        s3: {
+                          bucket: { name },
+                          object: { key },
+                        },
+                      } = record;
 
+                    console.log(`Received video: ${key} from bucket: ${name}`);
                     // spin the docker container 
+                    // ---------------transcoding part ----------------- //
+                    try {
+                        await transcodeVideo(key);
+                      } catch (err) {
+                        console.error(`Error transcoding video ${key}`, err);
+                      }
+                    // ---------------------------------------------------//   
                 }
                 
                 // delete the messages
+
+                // --> @prat yaha par temp bucket se video hata de agar succuessfully trnscode ho gyi ho toh 
 
                 await client.send(
                     new DeleteMessageCommand({
