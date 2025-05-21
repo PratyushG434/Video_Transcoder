@@ -42,8 +42,8 @@ export const updateVideosInfo = async ({ videoId, title = "Untitled Video", buck
   }
 
   const newVideoEntry = {
-    videoId,
-    title,
+    id : videoId,
+    title : title,
     url: `https://${bucket}.s3.amazonaws.com/public-videos/${videoId}/master.m3u8`,
     thumbnail: `https://${bucket}.s3.amazonaws.com/public-videos/${videoId}/thumbnail.jpg`,
     upload_time: new Date().toISOString(),
