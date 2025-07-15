@@ -4,11 +4,12 @@ import { uploadFolderToS3 } from './helpers/uploadFolderToS3';
 import { uploadMasterFile } from './helpers/uploadMasterFile';
 import { uploadThumbnail } from './helpers/thumbnailUpload';
 import { updateVideosInfo } from './helpers/updateMetadata';
+import { updateVideosInfo } from './helpers/updateMetadata';
+import { updateVideoTranscodeStatus , updateVideoDetails } from '../../controllers/updateVideoDetails';
 import fs from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
 import util from 'util';
-import { updateVideosInfo } from './helpers/updateMetadata';
 
 const execAsync = util.promisify(exec);
 export let videoId;
@@ -28,9 +29,14 @@ export async function transcodeVideo(inputKey) {
   try {
     console.log(`🔁 Starting transcoding for ${inputKey}...`);
 
+    // updating the transcode status of the video to Processing 
+
+    await updateVideoTranscodeStatus(inputKey, 'Processing');
+
     const localInputPath = await downloadFromS3(inputKey);
-    videoId = Date.now();
-    const s3Prefix = `public-videos/${videoId}`;
+    // videoId = Date.now();
+    // const s3Prefix = `public-videos/${videoId}`;
+    const s3Prefix = `public-videos/${inputKey}`;
 
     for (const rendition of renditions) {
       const { name, width, height } = rendition;
@@ -59,6 +65,11 @@ export async function transcodeVideo(inputKey) {
     await uploadMasterFile(s3Prefix);
     await uploadThumbnail(localInputPath, s3Prefix);
 
+    // updating the transcode status of the video to Completed and Updating the video Url and the thumbnail url
+     
+    await updateVideoDetails(inputKey, 'Completed', `${s3Prefix}/master.m3u8`, `${s3Prefix}/thumbnail.jpg`);
+        
+
     fs.rmSync('downloads', { recursive: true, force: true });
     console.log('🧼 Cleaned downloads folder');
 
@@ -66,14 +77,23 @@ export async function transcodeVideo(inputKey) {
     await deleteFromTempS3(inputKey);
 
     ///// here the code for updating video.js with s3Prefix and video title
-    await updateVideosInfo({
-      videoId,
-      title: path.basename(inputKey, path.extname(inputKey)), // use filename as title
-      bucket: process.env.PUBLIC_BUCKET, 
-    });
+    // ----> iski need nhi hai shyd ab
+    // await updateVideosInfo({
+    //   videoId,
+    //   title: path.basename(inputKey, path.extname(inputKey)), // use filename as title
+    //   bucket: process.env.PUBLIC_BUCKET, 
+    // });
 
   } catch (err) {
     console.error(`FFmpeg failed for ${inputKey}:`, err);
+
+    // updating the transcode status of the video to Failed 
+    try {
+      await updateVideoTranscodeStatus(inputKey, 'Failed');
+    } catch (updateErr) {
+      console.error('❌ Failed to update status to Failed:', updateErr.message);
+    }
+
     throw err;
   }
 }

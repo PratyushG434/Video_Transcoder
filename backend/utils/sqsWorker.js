@@ -9,7 +9,7 @@ const client = new SQSClient({
   },
 });
 
-async function init() {
+export default async function initSQSworker() {
     const command = new ReceiveMessageCommand({
         QueueUrl:'https://sqs.ap-south-1.amazonaws.com/718255339736/transcoder-temp-raw-video-queue',
         MaxNumberOfMessages:1,
@@ -88,4 +88,3 @@ async function init() {
     }
 }
 
-init();

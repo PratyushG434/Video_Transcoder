@@ -1,16 +1,24 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import urlRoute from './routes/urlRoute';
+import bodyParser from 'body-parser';
+import cors from "cors";
+import connectDB from './db/db.js';
+import initSQSworker from './utils/sqsWorker.js';
+import Router from './routes/routes.js';
 
-dotenv.config();
+
 
 const app = express();
 const port = 3000;
 
 
-app.use('/',urlRoute);
 
-app.listen(port, ()=>{
+app.use(express.json())
+app.use(cors()) 
+app.use(bodyParser.json({extended : true}))
+app.use(bodyParser.urlencoded({extended : true}))
+app.use('/',Router);
 
-    console.log(`Server listening on port ${port}`);
-});
+initSQSworker();
+connectDB();
+app.listen(port, ()=>{  console.log(`Server listening on port ${port}`) })
