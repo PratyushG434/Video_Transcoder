@@ -1,7 +1,8 @@
-import { generateUploadUrl } from "../utils/generateSignedURL";
+import { generateUploadUrl } from "../utils/generateSignedURL.js";
 
 
-export async function generateUploadURL(req, res){
+export async function generateUploadURL(req, res)
+{
     const { filename, filetype } = req.body;
   
     if (!filename || !filetype) {

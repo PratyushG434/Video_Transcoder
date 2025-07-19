@@ -1,4 +1,4 @@
-import Video from "../models/videoModel";
+import Video from "../models/videoModel.js";
 
 export async function updateVideoTranscodeStatus(videoId, newStatus){
   try {

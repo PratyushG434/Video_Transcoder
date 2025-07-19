@@ -1,11 +1,10 @@
-import { downloadFromS3 } from './helpers/downloadFromS3';
-import { deleteFromTempS3 } from './helpers/downloadFromS3';
-import { uploadFolderToS3 } from './helpers/uploadFolderToS3';
-import { uploadMasterFile } from './helpers/uploadMasterFile';
-import { uploadThumbnail } from './helpers/thumbnailUpload';
-import { updateVideosInfo } from './helpers/updateMetadata';
-import { updateVideosInfo } from './helpers/updateMetadata';
-import { updateVideoTranscodeStatus , updateVideoDetails } from '../../controllers/updateVideoDetails';
+import { downloadFromS3 } from './helpers/downloadFromS3.js';
+import { deleteFromTempS3 } from './helpers/downloadFromS3.js';
+import { uploadFolderToS3 } from './helpers/uploadFolderToS3.js';
+import { uploadMasterFile } from './helpers/uploadMasterFile.js';
+import { uploadThumbnail } from './helpers/thumbnailUpload.js';
+import { updateVideosInfo } from './helpers/updateMetadata.js';
+import { updateVideoTranscodeStatus, updateVideoDetails } from '../../controllers/updateVideoDetails.js';
 import fs from 'fs';
 import path from 'path';
 import { exec } from 'child_process';

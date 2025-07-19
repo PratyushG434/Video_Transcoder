@@ -1,8 +1,8 @@
 import express from "express";
-import { generateUploadURL } from "../controllers/generateUploadUrl";
-import { addNewUser } from "../controllers/userController";
-import { uploadVideoRequest } from "../controllers/uploadVideoController";
-import { getVideos , getUserVideos} from "../controllers/videoController";
+import generateUploadURL  from "../controllers/generateUploadUrl.js"
+import { addNewUser } from "../controllers/userController.js";
+import { uploadVideoRequest } from "../controllers/uploadVideoController.js";
+import { getVideos , getUserVideos} from "../controllers/videoController.js";
 
 const router = express.Router();
 

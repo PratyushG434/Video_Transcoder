@@ -3,8 +3,12 @@ import { Upload, Play, Users, Video } from "lucide-react"
 import { Button } from "../components/Button"
 import { Card } from "../components/Card"
 import { CardContent } from "../components/Card"
+import { useAuthStore} from "../store/useAuthStore";
 
 export default function HomePage() {
+  const { authUser, login , logout } = useAuthStore.getState();
+  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       {/* Header */}
@@ -21,6 +25,7 @@ export default function HomePage() {
             <Link to="/upload">
               <Button>Upload Video</Button>
             </Link>
+             {(!authUser)?<Button onClick={login}>Login</Button>:<Button onClick={logout}> Logout</Button>}
           </nav>
         </div>
       </header>
