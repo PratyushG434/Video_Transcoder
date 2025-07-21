@@ -1,5 +1,8 @@
 import {ReceiveMessageCommand, DeleteMessageCommand, SQSClient} from '@aws-sdk/client-sqs';
 import { transcodeVideo } from './transcoder/transcodeVideo.js';
+import dotenv from "dotenv";
+
+dotenv.config({ debug: false });
 
 const client = new SQSClient({
   region: process.env.AWS_REGION,
@@ -16,7 +19,7 @@ export default async function initSQSworker() {
         WaitTimeSeconds:20,
 
     });
-
+    console.log("SQS Worker Initialised")
     while(true)
     {
         const {Messages} = await client.send(command); 
