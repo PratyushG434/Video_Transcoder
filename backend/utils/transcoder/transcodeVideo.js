@@ -1,5 +1,5 @@
 import { downloadFromS3 } from './helpers/downloadFromS3.js';
-import { deleteFromTempS3 } from './helpers/downloadFromS3.js';
+import { deleteFromTempS3 } from './helpers/deleteFromTempS3.js';
 import { uploadFolderToS3 } from './helpers/uploadFolderToS3.js';
 import { uploadMasterFile } from './helpers/uploadMasterFile.js';
 import { uploadThumbnail } from './helpers/thumbnailUpload.js';
