@@ -6,7 +6,7 @@ import { Label } from "../components/label";
 import { Textarea } from "../components/Textarea";
 import { Progress } from "../components/progress";
 import { Upload, Video, X, CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom"; // Use this for React Router. If Next.js, keep using `next/link`
+import { Link } from "react-router-dom";
 
 export default function UploadPage() {
   const [dragActive, setDragActive] = useState(false);
@@ -16,8 +16,17 @@ export default function UploadPage() {
   const [uploadComplete, setUploadComplete] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  
-  const fileInputRef = useRef(null); // <-- Ref to the hidden file input
+  const [category, setCategory] = useState("");
+
+  const fileInputRef = useRef(null);
+
+  const categories = [
+    { id: 1, name: "Education" },
+    { id: 2, name: "Entertainment" },
+    { id: 3, name: "Technology" },
+    { id: 4, name: "Gaming" },
+    { id: 5, name: "Lifestyle" },
+  ];
 
   const handleDrag = useCallback((e) => {
     e.preventDefault();
@@ -48,7 +57,7 @@ export default function UploadPage() {
   };
 
   const handleUpload = async () => {
-    if (!file || !title) return;
+    if (!file || !title || !category) return;
 
     setUploading(true);
     setUploadProgress(0);
@@ -73,6 +82,7 @@ export default function UploadPage() {
         setFile(null);
         setTitle("");
         setDescription("");
+        setCategory("");
         setUploading(false);
         setUploadProgress(0);
         setUploadComplete(false);
@@ -142,7 +152,7 @@ export default function UploadPage() {
                     onChange={handleFileSelect}
                     className="hidden"
                     id="video-upload"
-                    ref={fileInputRef} // <-- Attach ref here
+                    ref={fileInputRef}
                   />
                   <Button
                     variant="outline"
@@ -183,6 +193,24 @@ export default function UploadPage() {
               </div>
 
               <div>
+                <Label htmlFor="category">Category *</Label>
+                <select
+                  id="category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  disabled={uploading}
+                  className="w-full border rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
@@ -215,7 +243,12 @@ export default function UploadPage() {
             )}
 
             {/* Upload Button */}
-            <Button onClick={handleUpload} disabled={!file || !title || uploading} className="w-full" size="lg">
+            <Button
+              onClick={handleUpload}
+              disabled={!file || !title || !category || uploading}
+              className="w-full"
+              size="lg"
+            >
               {uploading ? "Uploading..." : "Upload Video"}
             </Button>
           </CardContent>
