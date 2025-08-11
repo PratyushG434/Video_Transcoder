@@ -19,7 +19,7 @@ export async function getVideos (req, res){
 
 export async function getUserVideos(req, res) {
   try {
-    const { email } = req.query;
+    const { email } = req.body;
 
     if (!email) {
       return res.status(400).json({ message: 'Email query parameter is required' });

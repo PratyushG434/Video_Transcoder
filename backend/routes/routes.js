@@ -1,5 +1,5 @@
 import express from "express";
-import generateUploadURL  from "../controllers/generateUploadUrl.js"
+import { generateUploadURL } from "../controllers/generateUploadUrl.js";
 import { addNewUser } from "../controllers/userController.js";
 import { uploadVideoRequest } from "../controllers/uploadVideoController.js";
 import { getVideos , getUserVideos} from "../controllers/videoController.js";

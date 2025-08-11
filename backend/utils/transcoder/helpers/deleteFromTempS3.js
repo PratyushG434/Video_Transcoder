@@ -1,5 +1,5 @@
 import { S3Client , DeleteObjectCommand } from '@aws-sdk/client-s3';
-
+import dotenv from "dotenv";
 
 
 dotenv.config();
@@ -17,7 +17,7 @@ const s3 = new S3Client({
  * @param {string} key - S3 object key
  * @returns {Promise<void>}
  */
-export async function deleteFromS3(key) {
+export async function deleteFromTempS3(key) {
   const bucket = process.env.S3_BUCKET_NAME;
 
   const command = new DeleteObjectCommand({
