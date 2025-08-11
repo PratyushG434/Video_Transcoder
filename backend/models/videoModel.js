@@ -30,6 +30,11 @@ const videoSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  category: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   videoUrl: {
     type: String,
     default: '', // can be updated later
