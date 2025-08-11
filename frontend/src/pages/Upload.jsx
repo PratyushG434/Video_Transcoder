@@ -48,7 +48,7 @@ export default function UploadPage() {
   };
 
   const handleUpload = async () => {
-    if (!file || !title) return;
+    if (!file || !title || !description || !category) return;
 
     setUploading(true);
     setUploadProgress(0);

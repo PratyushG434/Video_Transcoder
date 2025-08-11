@@ -13,14 +13,13 @@ const s3 = new S3Client({
 });
 
 /**
- * Generate a pre-signed URL for uploading a file to S3.
- * @param {string} filename - The name of the file to upload.
- * @param {string} contentType - MIME type of the file (e.g. "video/mp4").
- * @returns {Promise<string>} - A URL that can be used to upload the file directly to S3.
+ * Generate a pre-signed URL for uploading a file to S3 with a given id as the filename.
+ * @param {string} id - The unique ID from your database (used as filename/key).
+ * @param {string} contentType - MIME type of the file.
+ * @returns {Promise<{url: string, key: string}>}
  */
-
-export async function generateUploadUrl(filename, contentType) {
-  const key = `uploads/${Date.now()}-${filename}`;
+export async function generateUploadUrl(id, contentType) {
+  const key = `uploads/${id}`; // Use the DB id as the filename/key
 
   const command = new PutObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,
@@ -28,7 +27,8 @@ export async function generateUploadUrl(filename, contentType) {
     ContentType: contentType,
   });
 
-  const url = await getSignedUrl(s3, command, { expiresIn: 300 }); // 5 minutes
+  const url = await getSignedUrl(s3, command, { expiresIn: 300 }); // 5 minutes expiry
+
   return { url, key };
 }
 
