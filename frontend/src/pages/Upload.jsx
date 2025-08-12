@@ -3,10 +3,12 @@ import { Button } from "../components/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/Card";
 import { Input } from "../components/Input";
 import { Label } from "../components/label";
+import axios from "axios";
 import { Textarea } from "../components/Textarea";
 import { Progress } from "../components/progress";
 import { Upload, Video, X, CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom"; // Use this for React Router. If Next.js, keep using `next/link`
+import { Link } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function UploadPage() {
   const [dragActive, setDragActive] = useState(false);
@@ -16,8 +18,17 @@ export default function UploadPage() {
   const [uploadComplete, setUploadComplete] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  
-  const fileInputRef = useRef(null); // <-- Ref to the hidden file input
+  const [category, setCategory] = useState("");
+  const { authUser } = useAuthStore.getState();
+  const fileInputRef = useRef(null);
+
+  const categories = [
+    { id: 1, name: "Education" },
+    { id: 2, name: "Entertainment" },
+    { id: 3, name: "Technology" },
+    { id: 4, name: "Gaming" },
+    { id: 5, name: "Lifestyle" },
+  ];
 
   const handleDrag = useCallback((e) => {
     e.preventDefault();
@@ -47,41 +58,67 @@ export default function UploadPage() {
     }
   };
 
-  const handleUpload = async () => {
-    if (!file || !title || !description || !category) return;
 
-    setUploading(true);
-    setUploadProgress(0);
+const handleUpload = async () => {
+  if(!authUser)
+  {
+    alert("You are required to sign in before uploading video");
+  }
+  if (!file || !title || !category) {
+    alert("Please fill all required fields including category.");
+    return;
+  }
 
-    try {
-      const interval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(interval);
-            return prev;
-          }
-          return prev + 10;
-        });
-      }, 200);
+  setUploading(true);
+  setUploadProgress(0);
+  setUploadComplete(false);
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+  try {
+    // 1. Request signed URL from backend
+    const response = await axios.post("http://localhost:3000/uploadVideoRequest", {
+      username: "exampleUser", // Replace with real user data
+      email: "user@example.com", // Replace with real email
+      title,
+      description,
+      category,
+      filetype: file.type,
+    });
 
-      setUploadProgress(100);
-      setUploadComplete(true);
+    const { uploadUrl, videoId } = response.data;
+    console.log(uploadUrl);
+    // 2. Upload file to S3 via signed URL with progress tracking
+    await axios.put(uploadUrl, file, {
+      headers: {},
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percentCompleted);
+        }
+      },
+    });
 
-      setTimeout(() => {
-        setFile(null);
-        setTitle("");
-        setDescription("");
-        setUploading(false);
-        setUploadProgress(0);
-        setUploadComplete(false);
-      }, 3000);
-    } catch (error) {
-      console.error("Upload failed:", error);
+    setUploadProgress(100);
+    setUploadComplete(true);
+
+    // Reset form after 3 seconds
+    setTimeout(() => {
+      setFile(null);
+      setTitle("");
+      setDescription("");
+      setCategory("");
       setUploading(false);
-    }
-  };
+      setUploadProgress(0);
+      setUploadComplete(false);
+    }, 3000);
+  } catch (error) {
+    console.error("Upload error:", error);
+    alert(`Upload failed: ${error.message}`);
+    setUploading(false);
+    setUploadProgress(0);
+  }
+};
 
   const removeFile = () => {
     setFile(null);
@@ -142,7 +179,7 @@ export default function UploadPage() {
                     onChange={handleFileSelect}
                     className="hidden"
                     id="video-upload"
-                    ref={fileInputRef} // <-- Attach ref here
+                    ref={fileInputRef}
                   />
                   <Button
                     variant="outline"
@@ -183,6 +220,24 @@ export default function UploadPage() {
               </div>
 
               <div>
+                <Label htmlFor="category">Category *</Label>
+                <select
+                  id="category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  disabled={uploading}
+                  className="w-full border rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
@@ -215,7 +270,12 @@ export default function UploadPage() {
             )}
 
             {/* Upload Button */}
-            <Button onClick={handleUpload} disabled={!file || !title || uploading} className="w-full" size="lg">
+            <Button
+              onClick={handleUpload}
+              disabled={!file || !title || !category || uploading}
+              className="w-full"
+              size="lg"
+            >
               {uploading ? "Uploading..." : "Upload Video"}
             </Button>
           </CardContent>

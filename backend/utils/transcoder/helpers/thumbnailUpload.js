@@ -37,7 +37,7 @@ export async function uploadThumbnail(localVideoPath, s3Prefix) {
     Key: `${s3Prefix}/thumbnail.jpg`,
     Body: fileContent,
     ContentType: 'image/jpeg',
-    ACL: 'public-read',
+    // ACL: 'public-read',
   });
 
   await s3.send(command);

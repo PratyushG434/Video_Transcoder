@@ -18,8 +18,8 @@ const s3 = new S3Client({
  * @param {string} contentType - MIME type of the file.
  * @returns {Promise<{url: string, key: string}>}
  */
-export async function generateUploadUrl(id, contentType) {
-  const key = `uploads/${id}`; // Use the DB id as the filename/key
+export async function generateUploadURL(id, contentType) {
+  const key = `${id}`; // Use the DB id as the filename/key
 
   const command = new PutObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,
@@ -29,7 +29,7 @@ export async function generateUploadUrl(id, contentType) {
 
   const url = await getSignedUrl(s3, command, { expiresIn: 300 }); // 5 minutes expiry
 
-  return { url, key };
+  return url;
 }
 
 

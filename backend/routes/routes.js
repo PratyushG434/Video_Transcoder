@@ -1,12 +1,10 @@
 import express from "express";
-import { generateUploadURL } from "../controllers/generateUploadUrl.js";
 import { addNewUser } from "../controllers/userController.js";
 import { uploadVideoRequest } from "../controllers/uploadVideoController.js";
 import { getVideos , getUserVideos} from "../controllers/videoController.js";
 
 const router = express.Router();
 
-router.post('/upload-url', generateUploadURL)
 
 router.post("/newUser" , addNewUser)
 router.get("/getAllVideos" , getVideos)

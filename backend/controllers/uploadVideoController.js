@@ -1,8 +1,9 @@
 import Video from "../models/videoModel.js";
+import { generateUploadURL } from "../utils/generateSignedURL.js";
 
-export async function uploadVideoRequest(req, res){
+export async function uploadVideoRequest(req, res) {
   try {
-    const { username, email, title, description , category, filetype } = req.body;
+    const { username, email, title, description, category, filetype } = req.body;
 
     // Validate required fields
     if (!username || !email || !title || !description || !category || !filetype) {
@@ -18,13 +19,21 @@ export async function uploadVideoRequest(req, res){
       category
       // videoUrl, thumbnailUrl, and transcodeStatus will use default values
     });
-
-     const = 
-
+    let url;
+    console.log(video._id);
+    try {
+      url = await generateUploadURL(video._id, filetype);
+    } catch (err) {
+      console.error('Error generating pre-signed URL:', err);
+      return res.status(500).json({ error: 'Could not generate upload url' });
+    }
+    console.log(url);
     res.status(201).json({
       message: 'Video entry created successfully',
       videoId: video._id,
+      uploadUrl: url,
     });
+
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }

@@ -26,10 +26,9 @@ const renditions = [
 
 export async function transcodeVideo(inputKey) {
   try {
-    console.log(`🔁 Starting transcoding for ${inputKey}...`);
-
+    
     // updating the transcode status of the video to Processing 
-
+    console.log(`🔁 Starting transcoding for ${inputKey}...`);
     await updateVideoTranscodeStatus(inputKey, 'Processing');
 
     const localInputPath = await downloadFromS3(inputKey);
