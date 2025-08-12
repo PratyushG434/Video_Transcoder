@@ -73,14 +73,9 @@ export async function transcodeVideo(inputKey) {
 
     // deleting the original video file from temp bucket 
     await deleteFromTempS3(inputKey);
+    console.log('Deleted video from temporary bucket');
 
-    ///// here the code for updating video.js with s3Prefix and video title
-    // ----> iski need nhi hai shyd ab
-    // await updateVideosInfo({
-    //   videoId,
-    //   title: path.basename(inputKey, path.extname(inputKey)), // use filename as title
-    //   bucket: process.env.PUBLIC_BUCKET, 
-    // });
+  
 
   } catch (err) {
     console.error(`FFmpeg failed for ${inputKey}:`, err);
