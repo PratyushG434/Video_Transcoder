@@ -34,7 +34,8 @@ export async function transcodeVideo(inputKey) {
     const localInputPath = await downloadFromS3(inputKey);
     // videoId = Date.now();
     // const s3Prefix = `public-videos/${videoId}`;
-    const s3Prefix = `https://${process.env.PUBLIC_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/public-videos/${inputKey}`;
+    const s3Prefix = `public-videos/${inputKey}`;
+    const URL = `https://${process.env.PUBLIC_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/public-videos/${inputKey}`;
 
     for (const rendition of renditions) {
       const { name, width, height } = rendition;
@@ -65,7 +66,7 @@ export async function transcodeVideo(inputKey) {
 
     // updating the transcode status of the video to Completed and Updating the video Url and the thumbnail url
      
-    await updateVideoDetails(inputKey, 'Completed', `${s3Prefix}/master.m3u8`, `${s3Prefix}/thumbnail.jpg`);
+    await updateVideoDetails(inputKey, 'Completed', `${URL}/master.m3u8`, `${URL}/thumbnail.jpg`);
         
 
     fs.rmSync('downloads', { recursive: true, force: true });

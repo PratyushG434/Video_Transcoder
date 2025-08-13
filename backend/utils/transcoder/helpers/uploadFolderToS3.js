@@ -39,6 +39,5 @@ export async function uploadFolderToS3(folderPath, s3Prefix) {
 
     await s3.send(command);
     console.log(`✅ Uploaded ${file} to ${s3Prefix}`);
-    
   }
 }
