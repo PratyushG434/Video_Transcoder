@@ -163,39 +163,53 @@ export default function HomePage() {
         </div>
 
         {/* Recent Videos */}
-        <div className="text-center">
-          <h3 className="text-3xl font-bold text-gray-900 mb-8">Recent Uploads</h3>
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {recentVideos.length > 0 ? (
-              recentVideos.map((video) => (
-                <Card key={video._id} className="overflow-hidden">
-                  <div className="aspect-video bg-gray-200 flex items-center justify-center">
-                    {video.thumbnailUrl ? (
-                      <img
-                        src={video.thumbnailUrl}
-                        alt={video.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Play className="h-12 w-12 text-gray-400" />
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <h4 className="font-semibold mb-2">{video.title}</h4>
-                    <p className="text-sm text-gray-600">{video.description}</p>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <p className="text-gray-500">No videos found</p>
-            )}
-          </div>
-          <Link to="/browse">
-            <Button variant="outline" size="lg">
-              View All Videos
-            </Button>
-          </Link>
-        </div>
+       {/* Recent Videos */}
+<div className="text-center">
+  <h3 className="text-3xl font-bold text-gray-900 mb-8">Recent Uploads</h3>
+  <div className="grid md:grid-cols-3 gap-6 mb-8">
+    {recentVideos.length > 0 ? (
+      recentVideos.map((video) => (
+        <Card
+  key={video._id}
+  className="overflow-hidden cursor-pointer rounded-xl border shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-white"
+  onClick={() => navigate(`/watch/${video._id}`, { state: { video } })}
+>
+  <div className="aspect-video relative bg-gray-200">
+    {video.thumbnailUrl ? (
+      <img
+        src={video.thumbnailUrl}
+        alt={video.title}
+        className="w-full h-full object-cover"
+      />
+    ) : (
+      <div className="flex items-center justify-center h-full">
+        <Play className="h-12 w-12 text-gray-400" />
+      </div>
+    )}
+  </div>
+  <CardContent className="p-4">
+    <h4 className="font-semibold text-lg text-gray-900 truncate mb-1">
+      {video.title}
+    </h4>
+    <p className="text-sm text-gray-500 mb-2">by {video.username}</p>
+    <p className="text-sm text-gray-600 line-clamp-2">
+      {video.description}
+    </p>
+  </CardContent>
+</Card>
+
+      ))
+    ) : (
+      <p className="text-gray-500">No videos found</p>
+    )}
+  </div>
+  <Link to="/browse">
+    <Button variant="outline" size="lg">
+      View All Videos
+    </Button>
+  </Link>
+</div>
+
       </main>
 
       {/* Footer */}

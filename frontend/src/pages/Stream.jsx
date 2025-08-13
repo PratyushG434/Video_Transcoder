@@ -9,7 +9,7 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:3000"; // backend
 
-const categories = ["All", "Nature", "Cooking", "Documentary", "Music", "Travel", "Technology"];
+const categories = ["All", "Nature", "Cooking", "Documentary", "Music", "Travel", "Technology" , "Education"];
 
 export default function BrowsePage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,8 +24,8 @@ export default function BrowsePage() {
       try {
         setError("");
         const res = await axios.get(`${BASE_URL}/getAllVideos`);
-        if (Array.isArray(res.data)) {
-          setVideos(res.data);
+        if (Array.isArray(res.data.videos)) {
+          setVideos(res.data.videos);
         } else {
           console.warn("Unexpected response format:", res.data);
           setVideos([]);
@@ -118,54 +118,63 @@ export default function BrowsePage() {
         {filteredVideos.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVideos.map((video) => (
-              <Link key={video.id}
+              <Link key={video._id}
                to={`/watch/${video._id}`}
                state={{ video }} 
                >
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-                  <div className="relative aspect-video bg-gray-200">
-                    <img
-                      src={video.thumbnailUrl || "/placeholder.svg"}
-                      alt={video.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                      <Play className="h-12 w-12 text-white" />
-                    </div>
-                    {video.duration && (
-                      <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
-                        {video.duration}
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">{video.title}</h3>
-                      {video.category && (
-                        <Badge variant="secondary" className="ml-2 text-xs">
-                          {video.category}
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-3">{video.description}</p>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <div className="flex items-center gap-4">
-                        {video.views !== undefined && (
-                          <div className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            <span>{formatViews(video.views)} views</span>
-                          </div>
-                        )}
-                        {video.uploadedAt && (
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            <span>{video.uploadedAt}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+  <div className="relative aspect-video bg-gray-200">
+    <img
+      src={video.thumbnailUrl || "/placeholder.svg"}
+      alt={video.title}
+      className="w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+      <Play className="h-12 w-12 text-white" />
+    </div>
+    {video.duration && (
+      <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+        {video.duration}
+      </div>
+    )}
+  </div>
+
+  <CardContent className="p-4">
+    <div className="flex justify-between items-start mb-2">
+      <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">{video.title}</h3>
+      {video.category && (
+        <Badge variant="secondary" className="ml-2 text-xs">
+          {video.category}
+        </Badge>
+      )}
+    </div>
+
+    {/* Username */}
+    {video.username && (
+      <p className="text-xs text-gray-500 mb-1">by {video.username}</p>
+    )}
+
+    <p className="text-sm text-gray-600 line-clamp-2 mb-3">{video.description}</p>
+
+    <div className="flex items-center justify-between text-xs text-gray-500">
+      <div className="flex items-center gap-4">
+        {video.views !== undefined && (
+          <div className="flex items-center gap-1">
+            <Eye className="h-3 w-3" />
+            <span>{formatViews(video.views)} views</span>
+          </div>
+        )}
+        {video.uploadedAt && (
+          <div className="flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            <span>{video.uploadedAt}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  </CardContent>
+</Card>
+
               </Link>
             ))}
           </div>
