@@ -34,7 +34,7 @@ export async function transcodeVideo(inputKey) {
     const localInputPath = await downloadFromS3(inputKey);
     // videoId = Date.now();
     // const s3Prefix = `public-videos/${videoId}`;
-    const s3Prefix = `public-videos/${inputKey}`;
+    const s3Prefix = `https://${process.env.PUBLIC_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/public-videos/${inputKey}`;
 
     for (const rendition of renditions) {
       const { name, width, height } = rendition;

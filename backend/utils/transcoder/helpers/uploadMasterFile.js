@@ -43,5 +43,5 @@ export async function uploadMasterFile(s3Prefix) {
   });
 
   await s3.send(command);
-  console.log(`✅ Uploaded master.m3u8 to ${s3Prefix}`);
+  console.log(`✅ Uploaded master.m3u8 to ${s3Prefix}/master.m3u8`);
 }
