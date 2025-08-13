@@ -76,8 +76,8 @@ const handleUpload = async () => {
   try {
     // 1. Request signed URL from backend
     const response = await axios.post("http://localhost:3000/uploadVideoRequest", {
-      username: "exampleUser", // Replace with real user data
-      email: "user@example.com", // Replace with real email
+      username: authUser.name, // Replace with real user data
+      email: authUser.email, // Replace with real email
       title,
       description,
       category,

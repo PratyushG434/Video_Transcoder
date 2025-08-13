@@ -4,7 +4,7 @@ import { Loader } from "lucide-react";
 import "./App.css";
 
 import HomePage from "./pages/Homesection";
-import UploadPage from "./pages/upload";
+import UploadPage from "./pages/Upload";
 import WatchPage from "./pages/videoid";
 import BrowsePage from "./pages/Stream";
 import LoginPage from "./pages/Login";
