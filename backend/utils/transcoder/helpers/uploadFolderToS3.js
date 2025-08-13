@@ -34,10 +34,11 @@ export async function uploadFolderToS3(folderPath, s3Prefix) {
       Key: `${s3Prefix}/${file}`,
       Body: fileContent,
       ContentType: file.endsWith('.ts') ? 'video/MP2T' : 'application/vnd.apple.mpegurl',
-      // ACL: 'public-read', // Make the files public
+      ACL: 'bucket-owner-full-control', // Make the files public
     });
 
     await s3.send(command);
     console.log(`✅ Uploaded ${file} to ${s3Prefix}`);
+    
   }
 }

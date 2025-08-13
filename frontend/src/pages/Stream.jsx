@@ -26,6 +26,7 @@ export default function BrowsePage() {
         const res = await axios.get(`${BASE_URL}/getAllVideos`);
         if (Array.isArray(res.data)) {
           setVideos(res.data);
+          console.log(res.data);
         } else {
           console.warn("Unexpected response format:", res.data);
           setVideos([]);
