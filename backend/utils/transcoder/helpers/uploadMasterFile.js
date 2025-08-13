@@ -39,7 +39,7 @@ export async function uploadMasterFile(s3Prefix) {
     Key: `${s3Prefix}/master.m3u8`,
     Body: fileContent,
     ContentType: 'application/vnd.apple.mpegurl',
-    ACL: 'bucket-owner-full-control',
+    ACL: 'public-read',
   });
 
   await s3.send(command);
