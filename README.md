@@ -11,7 +11,7 @@ A lightweight web application for **video uploading, transcoding, and adaptive s
 - 🎞️ **HLS Streaming** – Streams are served in `.m3u8` format for smooth playback.  
 - 📱 **Adaptive Bitrate Switching** – Optimized for unstable/low bandwidth connections.  
 - 🌍 **Cross-Platform Playback** – Works on desktop, mobile, and smart TVs.  
-- ☁️ **AWS Integration** *(optional)* – Upload videos directly to AWS S3 for scalable storage.  
+- ☁️ **AWS Integration** – Upload videos directly to AWS S3 through presigned urls for scalable storage.  
 
 ---
 
@@ -20,7 +20,7 @@ A lightweight web application for **video uploading, transcoding, and adaptive s
 - **Backend**: Node.js / Express.js  
 - **Video Processing**: [FFmpeg](https://ffmpeg.org/)  
 - **Streaming Protocol**: HLS (m3u8 playlists + .ts segments)  
-- **Frontend**: React.js + [hls.js](https://github.com/video-dev/hls.js) for playback  
+- **Frontend**: React.js + video.js 
 - **Storage**: Local / AWS S3 (configurable)  
 
 ---
